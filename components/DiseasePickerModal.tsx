@@ -16,7 +16,7 @@ export default function DiseasePickerModal({
 }) {
   const { diseases, assignDiseaseToPerson, getAssignedDiseases } = useDiseaseContext();
 
-  const assigned = getAssignedDiseases(personId).map((d) => d.id);
+  const assigned = getAssignedDiseases(personId).map((d: { id: string }) => d.id);
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center">

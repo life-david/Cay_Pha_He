@@ -304,12 +304,12 @@ export function parseGedcom(gedcom: string): {
     let fullName = "Unknown";
     let gender: "male" | "female" | "other" = "other";
     let is_deceased = false;
-    let birth_day = null;
-    let birth_month = null;
-    let birth_year = null;
-    let death_day = null;
-    let death_month = null;
-    let death_year = null;
+    let birth_day: number | null = null;
+    let birth_month: number | null = null;
+    let birth_year: number | null = null;
+    let death_day: number | null = null;
+    let death_month: number | null = null;
+    let death_year: number | null = null;
     let note = "";
 
     let currentTag = "";
@@ -390,8 +390,8 @@ export function parseGedcom(gedcom: string): {
 
   // Parse Families
   for (const record of records.filter((r) => r.type === "FAM")) {
-    let husb = null;
-    let wife = null;
+    let husb: string | null = null;
+    let wife: string | null = null;
     const children: string[] = [];
 
     for (const line of record.lines) {

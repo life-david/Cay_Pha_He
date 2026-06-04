@@ -43,17 +43,17 @@ export default async function EditMemberPage({ params }: PageProps) {
   }
 
   // Fetch Private Data
-  let privateData = null;
+  let privateData: Record<string, unknown> = {};
   if (isAdmin) {
     const { data } = await supabase
       .from("person_details_private")
       .select("*")
-      .eq("person_id", id)  
+      .eq("person_id", id)
       .single();
-    privateData = data;
+    privateData = data ?? {};
   }
 
-  const initialData = isAdmin  ? { ...person, ...privateData }  : { ...person };
+  const initialData = isAdmin ? { ...person, ...privateData } : { ...person };
 
   return (
     <div className="flex-1 w-full relative flex flex-col pb-8">

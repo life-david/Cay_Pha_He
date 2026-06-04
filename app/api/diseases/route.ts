@@ -3,7 +3,7 @@ import { createClient } from "@/utils/supabase/server";
 import { cookies } from "next/headers";
 
 export async function GET() {
-  const supabase = createClient(cookies());
+  const supabase = createClient(await cookies());
   try {
     const { data, error } = await supabase.from("diseases").select("*").order("created_at", { ascending: false });
     if (error) return NextResponse.json({ error: error.message }, { status: 500 });
@@ -15,7 +15,7 @@ export async function GET() {
 
 export async function POST(req: Request) {
   const body = await req.json();
-  const supabase = createClient(cookies());
+  const supabase = createClient(await cookies());
   try {
     const payload = { ...body, created_at: new Date().toISOString() };
     const { data, error } = await supabase.from("diseases").insert(payload).select();

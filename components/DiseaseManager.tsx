@@ -3,6 +3,12 @@
 import { useEffect, useState } from "react";
 import { useDiseaseContext } from "./DiseaseContext";
 
+type AutosomalProb = { AA: number; Aa: number; aa: number };
+type DominantProb = { affected: number; healthy: number; breakdown: AutosomalProb };
+type MitoProb = { affected: number; healthy: number };
+type XLinkedProb = { sons: { affected: number; healthy: number }; daughters: { affected: number; carrier: number; healthy: number } };
+type ProbabilityPreview = AutosomalProb | DominantProb | MitoProb | XLinkedProb | null;
+
 function genId() {
   return `d_${Date.now().toString(36)}_${Math.random().toString(36).slice(2,8)}`;
 }
@@ -116,7 +122,7 @@ export default function DiseaseManager() {
     };
   }
 
-  function getProbabilityPreview() {
+  function getProbabilityPreview(): ProbabilityPreview {
     if (mechanism === 'autosomal_recessive') return computeAutosomalProb(fatherGen, motherGen);
     if (mechanism === 'autosomal_dominant') return computeDominantProb(fatherGen, motherGen);
     if (mechanism === 'mitochondrial') return computeMitoProb(fatherGen, motherGen);
@@ -291,36 +297,40 @@ export default function DiseaseManager() {
                     const p = getProbabilityPreview();
                     if (!p) return <div className="text-xs text-stone-500">Không có dữ liệu</div>;
                     if (mechanism === 'autosomal_recessive') {
+                      const preview = p as AutosomalProb;
                       return (
                         <table className="w-full text-xs">
                           <thead><tr><th>AA (khỏe)</th><th>Aa (mang)</th><th>aa (mắc)</th></tr></thead>
-                          <tbody><tr><td>{p.AA.toFixed(0)}%</td><td>{p.Aa.toFixed(0)}%</td><td>{p.aa.toFixed(0)}%</td></tr></tbody>
+                          <tbody><tr><td>{preview.AA.toFixed(0)}%</td><td>{preview.Aa.toFixed(0)}%</td><td>{preview.aa.toFixed(0)}%</td></tr></tbody>
                         </table>
                       );
                     }
                     if (mechanism === 'autosomal_dominant') {
+                      const preview = p as DominantProb;
                       return (
                         <table className="w-full text-xs">
                           <thead><tr><th>Ảnh hưởng</th><th>Khỏe</th></tr></thead>
-                          <tbody><tr><td>{p.affected.toFixed(0)}%</td><td>{p.healthy.toFixed(0)}%</td></tr></tbody>
+                          <tbody><tr><td>{preview.affected.toFixed(0)}%</td><td>{preview.healthy.toFixed(0)}%</td></tr></tbody>
                         </table>
                       );
                     }
                     if (mechanism === 'mitochondrial') {
+                      const preview = p as MitoProb;
                       return (
                         <table className="w-full text-xs">
                           <thead><tr><th>Con mắc</th><th>Con khỏe</th></tr></thead>
-                          <tbody><tr><td>{p.affected}%</td><td>{p.healthy}%</td></tr></tbody>
+                          <tbody><tr><td>{preview.affected}%</td><td>{preview.healthy}%</td></tr></tbody>
                         </table>
                       );
                     }
                     if (mechanism === 'x_linked') {
+                      const preview = p as XLinkedProb;
                       return (
                         <div>
                           <div className="text-xs font-medium">Con trai</div>
-                          <table className="w-full text-xs mb-2"><tbody><tr><td>Mắc</td><td>{p.sons.affected.toFixed(0)}%</td><td>Khỏe</td><td>{p.sons.healthy.toFixed(0)}%</td></tr></tbody></table>
+                          <table className="w-full text-xs mb-2"><tbody><tr><td>Mắc</td><td>{preview.sons.affected.toFixed(0)}%</td><td>Khỏe</td><td>{preview.sons.healthy.toFixed(0)}%</td></tr></tbody></table>
                           <div className="text-xs font-medium">Con gái</div>
-                          <table className="w-full text-xs"><tbody><tr><td>Mắc</td><td>{p.daughters.affected.toFixed(0)}%</td><td>Mang gen ẩn</td><td>{p.daughters.carrier.toFixed(0)}%</td><td>Khỏe</td><td>{p.daughters.healthy.toFixed(0)}%</td></tr></tbody></table>
+                          <table className="w-full text-xs"><tbody><tr><td>Mắc</td><td>{preview.daughters.affected.toFixed(0)}%</td><td>Mang gen ẩn</td><td>{preview.daughters.carrier.toFixed(0)}%</td><td>Khỏe</td><td>{preview.daughters.healthy.toFixed(0)}%</td></tr></tbody></table>
                         </div>
                       );
                     }

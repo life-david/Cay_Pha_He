@@ -7,7 +7,7 @@ export function formatDisplayDate(
 ): string {
   if (!year && !month && !day) return "Chưa rõ";
 
-  const parts = [];
+  const parts: string[] = [];
   if (day) parts.push(day.toString().padStart(2, "0"));
   if (month) parts.push(month.toString().padStart(2, "0"));
   if (year) parts.push(year.toString());

@@ -1,9 +1,10 @@
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@/utils/supabase/server";
 import { cookies } from "next/headers";
 
-export async function PUT(req: Request, { params }: { params: { id: string } }) {
-  const supabase = createClient(cookies());
+export async function PUT(req: NextRequest, context: { params: Promise<{ id: string }> }) {
+  const params = await context.params;
+  const supabase = createClient(await cookies());
   const body = await req.json();
   try {
     const { data, error } = await supabase.from("diseases").update(body).eq("id", params.id).select();
@@ -14,8 +15,9 @@ export async function PUT(req: Request, { params }: { params: { id: string } }) 
   }
 }
 
-export async function DELETE(req: Request, { params }: { params: { id: string } }) {
-  const supabase = createClient(cookies());
+export async function DELETE(req: NextRequest, context: { params: Promise<{ id: string }> }) {
+  const params = await context.params;
+  const supabase = createClient(await cookies());
   try {
     const { error } = await supabase.from("diseases").delete().eq("id", params.id);
     if (error) return NextResponse.json({ error: error.message }, { status: 500 });

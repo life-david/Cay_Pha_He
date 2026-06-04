@@ -305,9 +305,9 @@ export default function FamilyTree({
       return;
     }
     // determine disease rules: prefer an explicitly selected active disease type, otherwise use origin's assigned disease
-    let disease = null;
+    let disease: any = null;
     if (activeDiseaseId) {
-      disease = diseases.find((d) => d.id === activeDiseaseId) ?? null;
+      disease = diseases.find((d: any) => d.id === activeDiseaseId) ?? null;
     }
     if (!disease) {
       disease = getAssignedDisease(maternalOriginId);

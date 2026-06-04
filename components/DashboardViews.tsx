@@ -176,7 +176,7 @@ export default function DashboardViews({
                       let cur: string | null = rootId;
                       while (cur) {
                         visible.add(cur);
-                        const parents = parentsMap.get(cur) ?? [];
+                        const parents: string[] = parentsMap.get(cur) ?? [];
                         if (parents.length === 0) break;
                         // choose first parent (or prefer by generation/birth if available)
                         cur = parents[0];
@@ -187,7 +187,7 @@ export default function DashboardViews({
                       while (stack.length > 0) {
                         const node = stack.pop()!;
                         visible.add(node);
-                        const childs = childrenMap.get(node) ?? [];
+                        const childs: string[] = childrenMap.get(node) ?? [];
                         for (const c of childs) {
                           if (!visible.has(c)) stack.push(c);
                         }
