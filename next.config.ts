@@ -1,8 +1,5 @@
 import type { NextConfig } from "next";
 
-const nextConfig: NextConfig = {
-	// export static HTML for GitHub Pages
-	output: "export",
-};
+const nextConfig: NextConfig = {};
 
 export default nextConfig;
