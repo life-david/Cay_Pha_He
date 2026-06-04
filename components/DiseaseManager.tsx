@@ -19,8 +19,8 @@ export default function DiseaseManager() {
   const [color, setColor] = useState("#f97316");
   const [mechanism, setMechanism] = useState("autosomal_recessive");
   const [showMechanismInfo, setShowMechanismInfo] = useState(false);
-  const [fatherGen, setFatherGen] = useState("aa");
-  const [motherGen, setMotherGen] = useState("aa");
+  const [fatherGen, setFatherGen] = useState("AA");
+  const [motherGen, setMotherGen] = useState("AA");
 
   useEffect(() => {
     if (editing) {
@@ -63,7 +63,7 @@ export default function DiseaseManager() {
     const counts: Record<string, number> = { AA: 0, Aa: 0, aa: 0 };
     for (const fa of f) for (const ma of m) {
       const g = (fa + ma).split('').sort().reverse().join('');
-      // ensure order 'AA' or 'Aa' or 'aa' where 'A' is disease allele per convention
+      // ensure order 'AA' or 'Aa' or 'aa' where 'a' is disease allele per convention
       let norm = g.replace(/a/g, 'a').replace(/A/g, 'A');
       if (norm === 'aA' || norm === 'Aa') norm = 'Aa';
       counts[norm] = (counts[norm] || 0) + 1;
@@ -77,12 +77,12 @@ export default function DiseaseManager() {
 
   function computeDominantProb(fGen: string, mGen: string) {
     const p = computeAutosomalProb(fGen, mGen);
-    return { affected: p.AA + p.Aa, healthy: p.aa, breakdown: p };
+    return { affected: p.Aa + p.aa, healthy: p.AA, breakdown: p };
   }
 
   function computeMitoProb(_f: string, mGen: string) {
-    // For mitochondrial we treat motherGen 'AA' as affected (per selector), else healthy
-    const motherAffected = mGen === 'AA';
+    // For mitochondrial we treat motherGen 'aa' as affected, else healthy
+    const motherAffected = mGen === 'aa';
     return { affected: motherAffected ? 100 : 0, healthy: motherAffected ? 0 : 100 };
   }
 
@@ -210,17 +210,17 @@ export default function DiseaseManager() {
             <div className="text-xs text-stone-500">
               {mechanism === 'autosomal_recessive' && (
                 <div>
-                  Hệ quy ước: Khỏe = aa, Mang gen ẩn = Aa, Mắc bệnh = AA. (Ví dụ: Tan máu bẩm sinh)
+                  Hệ quy ước: Khỏe = AA, Mang gen ẩn = Aa, Mắc bệnh = aa. (Ví dụ: Tan máu bẩm sinh)
                 </div>
               )}
               {mechanism === 'autosomal_dominant' && (
                 <div>
-                  Hệ quy ước: Khỏe = aa, Mắc bệnh = Aa hoặc AA. (Người bệnh thường là Aa trong quần thể)
+                  Hệ quy ước: Khỏe = AA, Mắc bệnh = Aa hoặc aa. (Người bệnh thường là Aa trong quần thể)
                 </div>
               )}
               {mechanism === 'mitochondrial' && (
                 <div>
-                  Nếu mẹ Mắc bệnh → 100% con (cả trai và gái) mắc; nếu mẹ khỏe → 0% con mắc.
+                  Nếu mẹ mắc (aa) → 100% con mắc; nếu mẹ khỏe (AA) → 0% con mắc.
                 </div>
               )}
               {mechanism === 'x_linked' && (
@@ -253,9 +253,9 @@ export default function DiseaseManager() {
                       </select>
                     ) : (
                       <select value={fatherGen} onChange={(e) => setFatherGen(e.target.value)} className="w-full p-2 border rounded">
-                        <option value="aa">Khỏe (aa)</option>
+                        <option value="AA">Khỏe (AA)</option>
                         <option value="Aa">Mang gen ẩn (Aa)</option>
-                        <option value="AA">Mắc bệnh (AA)</option>
+                        <option value="aa">Mắc bệnh (aa)</option>
                       </select>
                     )}
                   </div>
@@ -265,8 +265,8 @@ export default function DiseaseManager() {
                   <label className="text-xs">Trạng thái MẸ</label>
                   {mechanism === 'mitochondrial' ? (
                     <select value={motherGen} onChange={(e) => setMotherGen(e.target.value)} className="w-full p-2 border rounded">
-                      <option value="aa">Khỏe</option>
-                      <option value="AA">Mắc (tất cả con mắc)</option>
+                      <option value="AA">Khỏe</option>
+                      <option value="aa">Mắc (tất cả con mắc)</option>
                     </select>
                   ) : mechanism === 'x_linked' ? (
                     <select value={motherGen} onChange={(e) => setMotherGen(e.target.value)} className="w-full p-2 border rounded">
@@ -276,9 +276,9 @@ export default function DiseaseManager() {
                     </select>
                   ) : (
                     <select value={motherGen} onChange={(e) => setMotherGen(e.target.value)} className="w-full p-2 border rounded">
-                      <option value="aa">Khỏe (aa)</option>
+                      <option value="AA">Khỏe (AA)</option>
                       <option value="Aa">Mang gen ẩn (Aa)</option>
-                      <option value="AA">Mắc bệnh (AA)</option>
+                      <option value="aa">Mắc bệnh (aa)</option>
                     </select>
                   )}
                 </div>
@@ -293,7 +293,7 @@ export default function DiseaseManager() {
                     if (mechanism === 'autosomal_recessive') {
                       return (
                         <table className="w-full text-xs">
-                          <thead><tr><th>AA (mắc)</th><th>Aa (mang)</th><th>aa (khỏe)</th></tr></thead>
+                          <thead><tr><th>AA (khỏe)</th><th>Aa (mang)</th><th>aa (mắc)</th></tr></thead>
                           <tbody><tr><td>{p.AA.toFixed(0)}%</td><td>{p.Aa.toFixed(0)}%</td><td>{p.aa.toFixed(0)}%</td></tr></tbody>
                         </table>
                       );
@@ -355,24 +355,24 @@ export default function DiseaseManager() {
           <div className="space-y-4 text-sm text-stone-700">
             <div>
               <h4 className="font-medium">1. Lặn trên NST thường</h4>
-              <div className="text-xs mt-1">Khỏe = aa, Mang gen ẩn = Aa, Mắc bệnh = AA.</div>
+              <div className="text-xs mt-1">Khỏe = AA, Mang gen ẩn = Aa, Mắc bệnh = aa.</div>
               <table className="w-full text-xs mt-2 border-collapse"><thead><tr className="text-left"><th>Bố</th><th>Mẹ</th><th>Con mắc</th><th>Con mang</th><th>Con khỏe</th></tr></thead>
                 <tbody>
-                  <tr><td>aa</td><td>aa</td><td>0%</td><td>0%</td><td>100%</td></tr>
-                  <tr><td>aa</td><td>Aa</td><td>0%</td><td>50%</td><td>50%</td></tr>
+                  <tr><td>AA</td><td>AA</td><td>0%</td><td>0%</td><td>100%</td></tr>
+                  <tr><td>AA</td><td>Aa</td><td>0%</td><td>50%</td><td>50%</td></tr>
                   <tr><td>Aa</td><td>Aa</td><td>25%</td><td>50%</td><td>25%</td></tr>
-                  <tr><td>Aa</td><td>AA</td><td>50%</td><td>50%</td><td>0%</td></tr>
-                  <tr><td>AA</td><td>AA</td><td>100%</td><td>0%</td><td>0%</td></tr>
+                  <tr><td>Aa</td><td>aa</td><td>50%</td><td>50%</td><td>0%</td></tr>
+                  <tr><td>aa</td><td>aa</td><td>100%</td><td>0%</td><td>0%</td></tr>
                 </tbody></table>
             </div>
 
             <div>
               <h4 className="font-medium">2. Trội trên NST thường</h4>
-              <div className="text-xs mt-1">Khỏe = aa, Mắc bệnh = Aa hoặc AA.</div>
+              <div className="text-xs mt-1">Khỏe = AA, Mắc bệnh = Aa hoặc aa.</div>
               <table className="w-full text-xs mt-2"><thead><tr className="text-left"><th>Bố</th><th>Mẹ</th><th>Con mắc</th><th>Con khỏe</th></tr></thead>
                 <tbody>
-                  <tr><td>aa</td><td>aa</td><td>0%</td><td>100%</td></tr>
-                  <tr><td>Aa</td><td>aa</td><td>50%</td><td>50%</td></tr>
+                  <tr><td>AA</td><td>AA</td><td>0%</td><td>100%</td></tr>
+                  <tr><td>Aa</td><td>AA</td><td>50%</td><td>50%</td></tr>
                   <tr><td>Aa</td><td>Aa</td><td>75%</td><td>25%</td></tr>
                 </tbody></table>
             </div>
