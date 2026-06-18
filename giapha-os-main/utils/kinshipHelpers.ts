@@ -246,7 +246,11 @@ function resolveBloodTerms(
     // Nếu cách nhiều đời (ví dụ B là anh của ông nội)
     let prefix = "";
     if (depthA === 3) {
-      prefix = `${genderB === "female" ? "Bà" : "Ông"} ${isPaternalSide ? "nội" : "ngoại"} `;
+      return [
+        genderB === "female" ? "Bà Họ" : "Ông Họ",
+        "Cháu Họ",
+        isPaternalSide ? "Bên Nội (Vế trên)" : "Bên Ngoại (Vế trên)",
+      ];
     } else if (depthA === 4) {
       prefix = `${genderB === "female" ? "Cụ bà" : "Cụ ông"} ${isPaternalSide ? "nội" : "ngoại"} `;
     } else if (depthA > 4) {
@@ -325,9 +329,9 @@ function resolveBloodTerms(
             termForB = genderB === "female" ? "Dì họ" : "Cậu họ";
           }
         } else {
-          termForB = genderB === "female" ? "Bà họ" : "Ông họ";
+          termForB = genderB === "female" ? "Bà Họ" : "Ông Họ";
         }
-        return [termForB, "Cháu họ", `Họ hàng ${side}`];
+        return [termForB, "Cháu Họ", `Họ hàng ${side}`];
       } else {
         const [bCallsA, aCallsB, desc] = resolveBloodTerms(
           depthB,
@@ -619,12 +623,24 @@ export function computeKinship(
         bCallsA = "Thím họ";
       } else if (res.bCallsA === "Bác họ") {
         bCallsA = "Bác họ";
+      } else if (res.bCallsA === "Bác") {
+        bCallsA = "Bác";
       } else if (res.bCallsA === "Cô") {
         bCallsA = "Chú";
       } else if (res.bCallsA === "Cậu") {
-        bCallsA = "Dì";
+        bCallsA = "Mợ";
       } else if (res.bCallsA === "Dì") {
-        bCallsA = "Cậu";
+        bCallsA = "Chú";
+      } else if (res.bCallsA === "Cô họ") {
+        bCallsA = "Chú họ";
+      } else if (res.bCallsA === "Cậu họ") {
+        bCallsA = "Mợ họ";
+      } else if (res.bCallsA === "Dì họ") {
+        bCallsA = "Chú họ";
+      } else if (res.bCallsA === "Bà Họ") {
+        bCallsA = "Ông Họ";
+      } else if (res.bCallsA === "Ông Họ") {
+        bCallsA = "Bà Họ";
       } else if (res.bCallsA === "Bà Cô") {
         bCallsA = "Ông Dượng";
       } else if (res.bCallsA === "Ông Chú") {
@@ -679,12 +695,26 @@ export function computeKinship(
         aCallsB = "Thím";
       } else if (res.aCallsB === "Chú họ") {
         aCallsB = "Thím họ";
+      } else if (res.aCallsB === "Bác họ") {
+        aCallsB = "Bác họ";
+      } else if (res.aCallsB === "Bác") {
+        aCallsB = "Bác";
       } else if (res.aCallsB === "Cô") {
         aCallsB = "Chú";
       } else if (res.aCallsB === "Cậu") {
-        aCallsB = "Dì";
+        aCallsB = "Mợ";
       } else if (res.aCallsB === "Dì") {
-        aCallsB = "Cậu";
+        aCallsB = "Chú";
+      } else if (res.aCallsB === "Cô họ") {
+        aCallsB = "Chú họ";
+      } else if (res.aCallsB === "Cậu họ") {
+        aCallsB = "Mợ họ";
+      } else if (res.aCallsB === "Dì họ") {
+        aCallsB = "Chú họ";
+      } else if (res.aCallsB === "Bà Họ") {
+        aCallsB = "Ông Họ";
+      } else if (res.aCallsB === "Ông Họ") {
+        aCallsB = "Bà Họ";
       } else if (res.aCallsB === "Bà Cô") {
         aCallsB = "Ông Dượng";
       } else if (res.aCallsB === "Ông Chú") {
