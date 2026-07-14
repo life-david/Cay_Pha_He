@@ -256,14 +256,14 @@ const KINSHIP_TERMS = [
     example: "Bác (anh), Chú (em trai), Cô (chị em gái)",
   },
   {
-    relation: "Cậu / Dì",
+    relation: "Bác / Cậu / Dì / Bá",
     desc: "Anh/chị/em của mẹ (Bên Ngoại)",
-    example: "Cậu (anh em trai), Dì (chị em gái)",
+    example: "Bác (anh trai lớn), Cậu (anh em trai), Bá (chị gái lớn), Dì (chị em gái nhỏ)",
   },
   {
-    relation: "Thím / Mợ / Dượng",
+    relation: "Thím / Mợ / Chú",
     desc: "Vợ/chồng của chú, cậu, cô, dì",
-    example: "Thím (vợ chú), Mợ (vợ cậu), Dượng (chồng cô/dì)",
+    example: "Thím (vợ chú), Mợ (vợ cậu), Chú (chồng cô/dì)",
   },
   {
     relation: "Ông / Bà Thông gia",
@@ -276,10 +276,15 @@ const KINSHIP_TERMS = [
     example: "Bố dượng: chồng mới của mẹ; Mẹ kế: vợ mới của cha",
   },
   {
-    relation: "Ghi chú về Dượng",
+    relation: "Ghi chú về Chú (hôn nhân)",
     desc: "Tùy vùng miền có thể gọi khác nhau",
-    example: "'Dượng' (chồng cô/dì) đôi khi gọi là 'Chú' ở một số vùng; hệ thống giữ tên chuẩn trừ khi có cấu hình vùng miền",
+    example: "Trong hệ thống này, chồng của cô hoặc dì được gọi là 'Chú' thay vì 'Dượng' theo tùy chỉnh vùng miền",
   },
+  {
+    relation: "Họ hai bề",
+    desc: "Khi có quan hệ huyết thống ở cả hai phía Nội và Ngoại",
+    example: "Ưu tiên xưng hô theo bên Nội đối với con cái của họ. Đối với chính họ, xưng hô theo từng nhánh tương ứng.",
+  }
 ];
 
 // ── Main component ────────────────────────────────────────────────────────────

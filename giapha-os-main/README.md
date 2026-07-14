@@ -44,7 +44,7 @@ Phù hợp với người Việt Nam.
 - **Bố/Mẹ chồng, Bố/Mẹ vợ**: Cha/mẹ của chồng hoặc vợ (từ góc nhìn người lập hồ sơ).
 - **Con rể / Con dâu**: Chồng/vợ của con (xác định theo giới tính để chọn từ ngữ phù hợp).
 - **Anh/Chị/Em chồng, Anh/Chị/Em vợ**: Anh/chị/em ruột của chồng hoặc vợ.
-- **Thím / Mợ / Dượng**: Vợ/chồng của chú/cậu/cô/dì — áp dụng tương tự như quan hệ huyết thống nhưng ghi nhận là "qua hôn nhân".
+- **Thím / Mợ / Chú**: Vợ/chồng của chú/cậu/cô/dì — áp dụng tương tự như quan hệ huyết thống nhưng ghi nhận là "qua hôn nhân".
 
 Ghi chú dữ liệu để kết quả chính xác:
 - Cần nhập đủ quan hệ `Bố/Mẹ - Con` và `Kết hôn`.
