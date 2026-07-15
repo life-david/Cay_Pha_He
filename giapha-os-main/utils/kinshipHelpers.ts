@@ -13,6 +13,8 @@ export interface KinshipResult {
   depthB?: number;
   /** Các bước quan hệ chi tiết */
   pathLabels: string[];
+  /** B là vai trên so với A (hoặc ngược lại tùy ngữ cảnh) */
+  isSenior?: boolean | null;
 }
 
 export interface PersonNode {
@@ -248,8 +250,12 @@ function resolveBloodTerms(
       ? "Cháu"
       : getDirectDescendantTerm(depthA);
 
+    const resolvedTermForB = ["Bác", "Chú", "Cô", "Bá", "Dì"].includes(termForB) && !termForB.includes("họ")
+      ? `${termForB} họ`
+      : termForB;
+
     return [
-      (prefix + termForB).trim(),
+      (prefix + resolvedTermForB).trim(),
       descendantTerm,
       isPaternalSide ? "Bên Nội (Vế trên)" : "Bên Ngoại (Vế trên)",
     ];
@@ -329,9 +335,18 @@ function resolveBloodTerms(
                   : `Bác${suffix}`;
             }
           } else {
-            termForB = getMaternalCollateralTerm(genderB, bSeniorityToAncestorA);
-            if (!isClose) {
-              termForB += " họ";
+            const hint = getKinshipTitleHint(personB.full_name);
+            if (hint === "Dì") {
+              termForB = `Dì${suffix}`;
+            } else if (hint === "Bá") {
+              termForB = `Bá${suffix}`;
+            } else if (hint === "Cô") {
+              termForB = `Cô${suffix}`;
+            } else {
+              termForB = getMaternalCollateralTerm(genderB, bSeniorityToAncestorA);
+              if (!isClose) {
+                termForB += " họ";
+              }
             }
           }
         } else {
@@ -489,6 +504,21 @@ function findBloodKinship(
     dataB.side,
   );
 
+  // Xác định isSenior: B có là vai trên so với A không?
+  let isSenior: boolean | null = null;
+  if (dataA.depth > 0 && dataB.depth > 0) {
+    const branchA = dataA.path[dataA.path.length - 1];
+    const branchB = dataB.path[dataB.path.length - 1];
+    if (branchA && branchB) {
+      const seniority = compareSeniority(personB, branchA);
+      isSenior = seniority === "senior";
+    }
+  } else if (dataA.depth > 0) {
+    isSenior = true;
+  } else if (dataB.depth > 0) {
+    isSenior = false;
+  }
+
   const lcaName = personsMap.get(lcaId)?.full_name ?? "Tổ tiên chung";
   const pathParts: string[] = [];
   if (personA.id !== lcaId) {
@@ -506,6 +536,7 @@ function findBloodKinship(
     depthA: dataA.depth,
     depthB: dataB.depth,
     pathLabels: pathParts,
+    isSenior,
   };
 }
 
@@ -612,10 +643,9 @@ export function computeKinship(
         bCallsA = personA.gender === "male" ? "Con rể" : "Con dâu";
       } else if (res.bCallsA === "Cháu") {
         bCallsA = personA.gender === "male" ? "Cháu rể" : "Cháu dâu";
-      } else if (
-        res.bCallsA.includes("Anh trai") ||
-        res.bCallsA.includes("Chị gái")
-      ) {
+      } else if (res.bCallsA === "Anh" || res.bCallsA.includes("Anh trai")) {
+        bCallsA = personA.gender === "male" ? "Anh rể" : "Chị dâu";
+      } else if (res.bCallsA === "Chị" || res.bCallsA.includes("Chị gái")) {
         bCallsA = personA.gender === "male" ? "Anh rể" : "Chị dâu";
       } else if (res.bCallsA.includes("Em")) {
         bCallsA = personA.gender === "male" ? "Em rể" : "Em dâu";
@@ -629,27 +659,27 @@ export function computeKinship(
       } else if (res.bCallsA === "Chú") {
         bCallsA = "Thím";
       } else if (res.bCallsA === "Chú họ") {
-        bCallsA = "Thím họ";
+        bCallsA = "Bác họ";
       } else if (res.bCallsA === "Bác họ") {
         bCallsA = "Bác họ";
       } else if (res.bCallsA === "Bác") {
         bCallsA = "Bác";
       } else if (res.bCallsA === "Bá") {
-        bCallsA = "Bác";
+        bCallsA = "Dì";
       } else if (res.bCallsA === "Bá họ") {
-        bCallsA = "Bác họ";
+        bCallsA = "Dì họ";
       } else if (res.bCallsA === "Cô") {
-        bCallsA = "Chú";
+        bCallsA = res.isSenior ? "Bác" : "Chú";
       } else if (res.bCallsA === "Cậu") {
         bCallsA = "Mợ";
       } else if (res.bCallsA === "Dì") {
-        bCallsA = "Chú";
+        bCallsA = "Dì";
       } else if (res.bCallsA === "Cô họ") {
-        bCallsA = "Chú họ";
+        bCallsA = "Bác họ";
       } else if (res.bCallsA === "Cậu họ") {
         bCallsA = "Mợ họ";
       } else if (res.bCallsA === "Dì họ") {
-        bCallsA = "Chú họ";
+        bCallsA = "Dì họ";
       } else if (res.bCallsA === "Bà Họ") {
         bCallsA = "Ông Họ";
       } else if (res.bCallsA === "Ông Họ") {
@@ -694,9 +724,9 @@ export function computeKinship(
         aCallsB = personB.gender === "male" ? "Con rể" : "Con dâu";
       } else if (res.aCallsB === "Cháu") {
         aCallsB = personB.gender === "male" ? "Cháu rể" : "Cháu dâu";
-      } else if (res.aCallsB.includes("Anh trai")) {
+      } else if (res.aCallsB === "Anh" || res.aCallsB.includes("Anh trai")) {
         aCallsB = personB.gender === "female" ? "Chị dâu" : "Anh rể";
-      } else if (res.aCallsB.includes("Chị gái")) {
+      } else if (res.aCallsB === "Chị" || res.aCallsB.includes("Chị gái")) {
         aCallsB = personB.gender === "male" ? "Anh rể" : "Chị dâu";
       } else if (res.aCallsB.includes("Chị họ")) {
         aCallsB = "Anh rể (họ)";
@@ -719,13 +749,13 @@ export function computeKinship(
       } else if (res.aCallsB === "Cậu") {
         aCallsB = "Mợ";
       } else if (res.aCallsB === "Dì") {
-        aCallsB = "Chú";
+        aCallsB = "Dì";
       } else if (res.aCallsB === "Cô họ") {
-        aCallsB = "Chú họ";
+        aCallsB = "Bác họ";
       } else if (res.aCallsB === "Cậu họ") {
         aCallsB = "Mợ họ";
       } else if (res.aCallsB === "Dì họ") {
-        aCallsB = "Chú họ";
+        aCallsB = "Dì họ";
       } else if (res.aCallsB === "Bà Họ") {
         aCallsB = "Ông Họ";
       } else if (res.aCallsB === "Ông Họ") {
