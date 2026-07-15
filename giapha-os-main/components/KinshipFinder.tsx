@@ -227,17 +227,17 @@ function PersonSelector({
 const KINSHIP_TERMS = [
   {
     relation: "Bố / Mẹ",
-    desc: "1 bậc trên (dòng trực hệ)",
+    desc: "1 bậc trên (Trực hệ)",
     example: "Bố, ba, má...",
   },
   {
     relation: "Ông / Bà",
-    desc: "2 bậc trên (dòng trực hệ)",
+    desc: "2 bậc trên (Trực hệ)",
     example: "Ông nội, bà ngoại...",
   },
   {
     relation: "Cụ / Kỵ / Sơ...",
-    desc: "3 bậc trên trở lên",
+    desc: "3 bậc trên trở lên (Trực hệ)",
     example: "Cụ cố, cụ kỵ...",
   },
   {
@@ -247,43 +247,43 @@ const KINSHIP_TERMS = [
   },
   {
     relation: "Anh / Chị / Em họ",
-    desc: "Cùng thế hệ, khác nhánh",
-    example: "Dựa vào thứ bậc của nhánh bố/mẹ",
+    desc: "Cùng thế hệ (Khác nhánh)",
+    example: "Xưng hô dựa theo thứ bậc lớn/nhỏ của nhánh bố hoặc mẹ",
   },
   {
     relation: "Bác / Chú / Cô",
-    desc: "Anh/chị/em của bố (Bên Nội)",
+    desc: "Anh/chị/em ruột của bố (Bên Nội)",
     example: "Bác (anh), Chú (em trai), Cô (chị em gái)",
   },
   {
     relation: "Bác / Cậu / Dì / Bá",
-    desc: "Anh/chị/em của mẹ (Bên Ngoại)",
+    desc: "Anh/chị/em ruột của mẹ (Bên Ngoại)",
     example: "Bác (anh trai lớn), Cậu (anh em trai), Bá (chị gái lớn), Dì (chị em gái nhỏ)",
   },
   {
-    relation: "Thím / Mợ / Chú",
-    desc: "Vợ/chồng của chú, cậu, cô, dì",
-    example: "Thím (vợ chú), Mợ (vợ cậu), Chú (chồng cô/dì)",
+    relation: "Bác / Thím / Mợ / Chú",
+    desc: "Vợ/chồng của anh, chị, em của bố/mẹ",
+    example: "Bác (chị dâu hoặc anh rể của bố/mẹ), Thím (vợ chú), Mợ (vợ cậu), Chú (chồng cô/dì - xem ghi chú)",
   },
   {
     relation: "Ông / Bà Thông gia",
-    desc: "Phụ huynh của hai người kết hôn (thông gia)",
-    example: "Khi con A của bạn kết hôn với con B của người khác, cha/mẹ của A và cha/mẹ của B gọi nhau là Ông/Bà thông gia",
+    desc: "Phụ huynh của hai người kết hôn",
+    example: "Cha/mẹ của bên A và cha/mẹ của bên B gọi nhau là Ông/Bà thông gia",
   },
   {
     relation: "Bố dượng / Mẹ kế",
-    desc: "Quan hệ ghép/ghì (không huyết thống)",
+    desc: "Quan hệ ghép (Không huyết thống)",
     example: "Bố dượng: chồng mới của mẹ; Mẹ kế: vợ mới của cha",
   },
   {
-    relation: "Ghi chú về Chú (hôn nhân)",
+    relation: "Ghi chú quan trọng",
     desc: "Tùy vùng miền có thể gọi khác nhau",
-    example: "Trong hệ thống này, chồng của cô hoặc dì được gọi là 'Chú' thay vì 'Dượng' theo tùy chỉnh vùng miền",
+    example: "Chú (hôn nhân): chồng của cô hoặc dì được gọi là 'Chú' thay vì 'Dượng' theo tùy chỉnh vùng miền của gia đình",
   },
   {
     relation: "Họ hai bề",
     desc: "Khi có quan hệ huyết thống ở cả hai phía Nội và Ngoại",
-    example: "Ưu tiên xưng hô theo bên Nội đối với con cái của họ. Đối với chính họ, xưng hô theo từng nhánh tương ứng.",
+    example: "Trường hợp có quan hệ huyết thống ở cả hai phía Nội và Ngoại, con cái của họ sẽ được ưu tiên xưng hô theo bên Nội. Đối với chính họ, xưng hô sẽ linh hoạt theo từng nhánh tương ứng.",
   }
 ];
 

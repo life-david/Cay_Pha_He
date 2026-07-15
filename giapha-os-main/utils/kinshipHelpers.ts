@@ -97,6 +97,16 @@ function getDirectAncestorTerm(
   return ANCESTORS[depth] || `Tổ đời ${depth}`;
 }
 
+function getCollateralAncestorStem(
+  depth: number,
+  gender: "male" | "female" | "other",
+): string {
+  if (depth === 1) return gender === "female" ? "Mẹ" : "Bố";
+  if (depth === 2) return gender === "female" ? "Bà" : "Ông";
+  if (depth === 3 || depth === 4) return "Cụ";
+  return "Kỵ";
+}
+
 /**
  * Lấy danh xưng trực hệ vế dưới
  */
@@ -278,16 +288,15 @@ function resolveBloodTerms(
 
   // Anh em họ (Cùng thế hệ hoặc lệch thế hệ nhưng không trực hệ)
   if (depthA > 1 && depthB > 1) {
-    const side = isPaternalA ? "Nội" : "Ngoại";
+    const side = isPaternalA === true || isPaternalB === true ? "Nội" : "Ngoại";
 
     if (depthA === depthB) {
       // Cùng thế hệ
       // Ưu tiên tuyệt đối vai vế theo tổ tiên (cha/mẹ)
       const currentSeniority = branchSeniority === "equal" ? "junior" : branchSeniority;
 
-      // Nhận diện thân gần: Anh em họ đời 1 (chung ông bà) hoặc đời 2 (chung cụ)
-      const isClose = (depthA + depthB) <= 4;
-      const suffix = isClose ? "" : " họ";
+      // Anh/chị/em họ luôn giữ hậu tố để phân biệt với anh/chị/em ruột
+      const suffix = " họ";
 
       if (currentSeniority === "senior") {
         // Cha mẹ A lớn hơn cha mẹ B -> A là vai trên, B là vai dưới
@@ -350,7 +359,12 @@ function resolveBloodTerms(
             }
           }
         } else {
-          termForB = genderB === "female" ? "Bà Họ" : "Ông Họ";
+          const isPaternalSide = isPaternalA;
+          if (isPaternalSide == null) return ["Họ hàng", "Họ hàng", "Quan hệ họ hàng"];
+
+          const ancestorDepth = genDiff;
+          const baseTerm = getCollateralAncestorStem(ancestorDepth, genderB);
+          termForB = `${baseTerm} họ`;
         }
         const descendantSuffix = (depthA + depthB) <= 4 ? "" : " Họ";
         return [termForB, `Cháu${descendantSuffix}`, `Họ hàng ${side}`];
@@ -476,12 +490,24 @@ function findBloodKinship(
 
   if (candidates.length === 0) return null;
 
+  const paternalCandidates = candidates.filter(
+    (candidate) => candidate.sideA === true && candidate.sideB === true,
+  );
+
+  const rankingPool = paternalCandidates.length > 0 ? paternalCandidates : candidates;
+
   // Ưu tiên tuyệt đối khoảng cách ngắn nhất (Tổ tiên chung gần nhất)
-  let best = candidates[0];
-  for (const candidate of candidates.slice(1)) {
+  let best = rankingPool[0];
+  for (const candidate of rankingPool.slice(1)) {
     if (
       candidate.distance < best.distance ||
-      (candidate.distance === best.distance && candidate.sideScore < best.sideScore)
+      (candidate.distance === best.distance && candidate.sideScore < best.sideScore) ||
+      (
+        candidate.distance === best.distance &&
+        candidate.sideScore === best.sideScore &&
+        candidate.sideA === true &&
+        best.sideA !== true
+      )
     ) {
       best = candidate;
     }
